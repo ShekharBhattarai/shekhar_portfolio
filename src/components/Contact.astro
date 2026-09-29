@@ -1,0 +1,95 @@
+---
+import { profile } from '../data/portfolio';
+---
+
+<section id="contact" class="contact">
+  <div class="ring ring-lg" aria-hidden="true"></div>
+  <div class="ring ring-sm" aria-hidden="true"></div>
+
+  <div class="headline">
+    <span class="eyebrow">{profile.availability}</span>
+    <h2 class="display">Let's talk<br />signals.</h2>
+  </div>
+
+  <div class="links">
+    <a href={`mailto:${profile.email}`} class="email">
+      <span>{profile.email}</span><span class="arrow">→</span>
+    </a>
+    <div class="row">
+      <a href={profile.phoneHref} class="outline grow">{profile.phone}</a>
+      <a href={profile.linkedin} class="outline" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    position: relative;
+    overflow: hidden;
+    margin-top: 72px;
+    border-radius: 34px;
+    background: var(--lime);
+    color: var(--onacc);
+    padding: 60px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+    align-items: end;
+  }
+
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.12);
+  }
+  .ring-lg { right: -120px; top: -160px; width: 420px; height: 420px; }
+  .ring-sm { right: -60px; top: -100px; width: 300px; height: 300px; }
+
+  .headline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .headline .eyebrow { font-size: 13px; }
+  h2 {
+    font-weight: 800;
+    font-size: clamp(48px, 8vw, 72px);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+  }
+
+  .links {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 800;
+  }
+  .links a {
+    padding: 18px 22px;
+    border-radius: 18px;
+  }
+  /* Fixed colours on purpose: this block is lime in both themes. */
+  .email {
+    background: #131316;
+    color: #f5f5f0;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    overflow-wrap: anywhere;
+  }
+  .arrow { color: var(--lime); }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .outline { border: 2px solid #131316; white-space: nowrap; }
+  .grow { flex: 1; }
+
+  @media (max-width: 860px) {
+    .contact { grid-template-columns: 1fr; padding: 40px 28px; }
+  }
+  @media (max-width: 600px) {
+    .contact { border-radius: 26px; padding: 32px 20px; }
+    .links { font-size: 15px; }
+  }
+</style>

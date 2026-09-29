@@ -1,0 +1,61 @@
+---
+import { tools } from '../data/portfolio';
+
+const dots = ['var(--lime)', 'var(--coral)', 'var(--sky)', 'var(--pink)'];
+// The list is rendered twice; the track slides left by 50% and loops seamlessly.
+const copies = [false, true];
+---
+
+<div class="marquee">
+  <div class="track">
+    {
+      copies.map((hidden) => (
+        <ul aria-hidden={hidden ? 'true' : undefined}>
+          {tools.map((tool, i) => (
+            <li>
+              <span class="dot" style={`background:${dots[i % dots.length]}`} />
+              {tool}
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    margin-top: 22px;
+    border-radius: 999px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    padding: 16px 0;
+  }
+  .track {
+    display: flex;
+    width: max-content;
+    animation: sbmarq 40s linear infinite;
+  }
+  .marquee:hover .track { animation-play-state: paused; }
+  ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-right: 36px;
+    font-weight: 700;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+</style>

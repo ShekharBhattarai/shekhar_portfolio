@@ -1,0 +1,205 @@
+---
+// Interactive 3D microstrip patch antenna (FR-4, inset feed, edge-launch SMA).
+// three.js is loaded lazily once the viewer scrolls near the viewport.
+// Extra props (incl. the parent's scoping attribute) are spread onto the root.
+const { class: className, ...rest } = Astro.props;
+---
+
+<patch-antenna {...rest} class:list={['antenna', className]} role="img" aria-label="3D model of a microstrip patch antenna — drag to rotate">
+  <span class="hint mono">drag to orbit</span>
+</patch-antenna>
+
+<style>
+  .antenna {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    cursor: grab;
+  }
+  .antenna:active { cursor: grabbing; }
+  .antenna :global(canvas) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    outline: none;
+  }
+  .hint {
+    position: absolute;
+    left: 12px;
+    bottom: 10px;
+    font-size: 11px;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  import type * as T from 'three';
+
+  class PatchAntenna extends HTMLElement {
+    connectedCallback() {
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            io.disconnect();
+            this.boot();
+          }
+        },
+        { rootMargin: '200px' }
+      );
+      io.observe(this);
+    }
+
+    async boot() {
+      const [THREE, { OrbitControls }] = await Promise.all([
+        import('three'),
+        import('three/addons/controls/OrbitControls.js'),
+      ]);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      this.prepend(renderer.domElement);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(45, 1, 0.001, 10);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      // Leave the mouse wheel and vertical swipes to page scrolling.
+      controls.enableZoom = false;
+      controls.enablePan = false;
+      renderer.domElement.style.touchAction = 'pan-y';
+      controls.autoRotate = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+      controls.autoRotateSpeed = 1.2;
+      controls.addEventListener('start', () => (controls.autoRotate = false));
+
+      // Neutral studio lighting with a soft ground shadow.
+      scene.add(new THREE.HemisphereLight(0xffffff, 0xd8d2c4, 1.0));
+      const key = new THREE.DirectionalLight(0xffffff, 2.2);
+      key.position.set(4, 7, 5);
+      key.castShadow = true;
+      key.shadow.mapSize.set(2048, 2048);
+      key.shadow.bias = -0.0002;
+      scene.add(key);
+      const fill = new THREE.DirectionalLight(0xfff4e6, 0.5);
+      fill.position.set(-5, 3, -4);
+      scene.add(fill);
+      const ground = new THREE.Mesh(
+        new THREE.PlaneGeometry(2, 2),
+        new THREE.ShadowMaterial({ opacity: 0.18 })
+      );
+      ground.rotation.x = -Math.PI / 2;
+      ground.receiveShadow = true;
+      scene.add(ground);
+
+      const model = buildAntenna(THREE);
+      scene.add(model);
+
+      // Frame the camera to the model's bounds.
+      const sphere = new THREE.Box3().setFromObject(model).getBoundingSphere(new THREE.Sphere());
+      const dist = (sphere.radius / Math.tan((camera.fov * Math.PI) / 360)) * 1.25;
+      camera.position.copy(sphere.center).add(new THREE.Vector3(1, 0.75, 1.25).normalize().multiplyScalar(dist));
+      controls.target.copy(sphere.center);
+      const span = sphere.radius * 3;
+      Object.assign(key.shadow.camera, { left: -span, right: span, top: span, bottom: -span });
+      key.shadow.camera.updateProjectionMatrix();
+
+      const fit = () => {
+        const w = this.clientWidth || 1;
+        const h = this.clientHeight || 1;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      };
+      fit();
+      new ResizeObserver(fit).observe(this);
+
+      // Only render while on screen.
+      const loop = () => {
+        controls.update();
+        renderer.render(scene, camera);
+      };
+      new IntersectionObserver((entries) => {
+        renderer.setAnimationLoop(entries.some((e) => e.isIntersecting) ? loop : null);
+      }).observe(this);
+    }
+  }
+
+  /** 3.2 GHz microstrip patch — transmission-line model, FR-4 εr 4.4, h 1.6 mm. Units: mm → m. */
+  function buildAntenna(THREE: typeof T) {
+    const mm = 0.001;
+    const h = 1.6, t = 0.035;
+    const W = 28.51, L = 21.91;
+    const wf = 3.06, gap = 1.0, inset = 6.7; // 50 Ω line; inset ≈ 0.306 L for FR-4
+    const bx = 45, bz = 52.5; // ground extends > 6h past every patch edge
+    const patchZ0 = -7.29; // near (feed-side) edge of patch
+    const edgeZ = -bz / 2;
+
+    const M = (color: number, roughness: number, metalness: number) =>
+      new THREE.MeshStandardMaterial({ color, roughness, metalness });
+    const fr4 = M(0x3f6b45, 0.55, 0.0);
+    const copper = M(0xd4895a, 0.3, 0.35);
+    const gold = M(0xe0bb62, 0.28, 0.35);
+    const ptfe = M(0xf2f0ea, 0.6, 0.0);
+
+    const g = new THREE.Group();
+    const add = (geo: T.BufferGeometry, mat: T.Material, x = 0, y = 0, z = 0) => {
+      const m = new THREE.Mesh(geo, mat);
+      m.position.set(x * mm, y * mm, z * mm);
+      m.castShadow = m.receiveShadow = true;
+      g.add(m);
+    };
+    const box = (w: number, hh: number, d: number) => new THREE.BoxGeometry(w * mm, hh * mm, d * mm);
+    const cyl = (r: number, len: number, seg = 48) =>
+      new THREE.CylinderGeometry(r * mm, r * mm, len * mm, seg).rotateX(Math.PI / 2);
+    const hex = (r: number, len: number) =>
+      new THREE.CylinderGeometry(r * mm, r * mm, len * mm, 6).rotateX(Math.PI / 2).rotateZ(Math.PI / 6);
+
+    // Substrate + ground plane
+    add(box(bx, h, bz), fr4, 0, h / 2, 0);
+    add(box(bx, t, bz), copper, 0, -t / 2 - 0.001, 0);
+
+    // Patch with inset-feed notches (shape in x / -z, extruded up in y)
+    const hw = W / 2, nx = wf / 2 + gap, zf = patchZ0, zb = patchZ0 + L, zi = patchZ0 + inset;
+    const s = new THREE.Shape();
+    [[-hw, zf], [-nx, zf], [-nx, zi], [nx, zi], [nx, zf], [hw, zf], [hw, zb], [-hw, zb]].forEach(([x, z], i) =>
+      i ? s.lineTo(x * mm, -z * mm) : s.moveTo(x * mm, -z * mm)
+    );
+    const pg = new THREE.ExtrudeGeometry(s, { depth: t * mm, bevelEnabled: false });
+    pg.rotateX(-Math.PI / 2);
+    add(pg, copper, 0, h + 0.001, 0);
+
+    // 50 Ω feed line from board edge into the inset
+    const lf = zi - edgeZ;
+    add(box(wf, t, lf), copper, 0, h + t / 2 + 0.001, edgeZ + lf / 2);
+
+    // Edge-launch SMA connector
+    const axisY = h + 0.6;
+    const flangeT = 1.6, fs = 9.5;
+    add(box(fs, fs, flangeT), gold, 0, axisY, edgeZ - flangeT / 2 - 0.01);
+    const z1 = edgeZ - flangeT;
+    add(hex(4.4, 2.2), gold, 0, axisY, z1 - 1.1);
+    add(cyl(3.15, 8.0), gold, 0, axisY, z1 - 2.2 - 4.0);
+    for (let i = 0; i < 12; i++)
+      add(new THREE.TorusGeometry(3.15 * mm, 0.22 * mm, 8, 48), gold, 0, axisY, z1 - 3.0 - i * 0.6);
+    add(cyl(2.05, 0.4), ptfe, 0, axisY, z1 - 10.2 - 0.2 + 0.19);
+    add(cyl(0.6, 0.6, 24), gold, 0, axisY, z1 - 10.2 + 0.05);
+    // Centre pin resting on the feed line
+    add(cyl(0.25, 4.5, 24), gold, 0, h + t + 0.25, edgeZ + 2.25 - 0.8);
+    // Ground legs straddling the board
+    for (const sx of [-1, 1]) {
+      add(box(1.2, 0.6, 4.5), gold, sx * 3.6, h + t + 0.3 + 0.002, edgeZ + 2.25 - 0.8);
+      add(box(1.2, 0.6, 4.5), gold, sx * 3.6, -t - 0.3 - 0.002, edgeZ + 2.25 - 0.8);
+    }
+
+    // Rest lowest point on y = 0
+    const bb = new THREE.Box3().setFromObject(g);
+    g.position.y = -bb.min.y;
+    return g;
+  }
+
+  customElements.define('patch-antenna', PatchAntenna);
+</script>

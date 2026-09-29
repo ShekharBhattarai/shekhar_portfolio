@@ -1,0 +1,174 @@
+/* ---------- Theme tokens ---------- */
+/* The theme is set as data-theme="dark|light" on <html> (see Layout.astro). */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0e0e11;
+  --card: #1a1a1f;
+  --card2: #25252c;
+  --ink: #f5f5f0;
+  --muted: #b0b0ba;
+  --dim: #7a7a84;
+  --line: rgba(255, 255, 255, 0.08);
+  --lime: #bde23a;
+  --coral: #ff6b4a;
+  --sky: #3b9ee6;
+  --pink: #e8488f;
+  --limeT: #c4e84a;
+  --coralT: #ff8a6e;
+  --skyT: #5fafea;
+  --pinkT: #ef65a7;
+  --onacc: #111114;
+  --stripe: #24242b;
+  --glow: rgba(189, 226, 58, 0.14);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f4f2eb;
+  --card: #ffffff;
+  --card2: #ece9e0;
+  --ink: #131316;
+  --muted: #51515a;
+  --dim: #85858d;
+  --line: rgba(0, 0, 0, 0.08);
+  --lime: #bfe23a;
+  --coral: #ff7a59;
+  --sky: #5aafee;
+  --pink: #ef62a8;
+  --limeT: #4f6c00;
+  --coralT: #c43d1c;
+  --skyT: #0a66b4;
+  --pinkT: #b8166a;
+  --onacc: #131316;
+  --stripe: #e6e2d7;
+  --glow: rgba(160, 210, 0, 0.18);
+}
+
+/* Accent helpers: set --a (fill colour) and --at (readable text colour). */
+.accent-lime { --a: var(--lime); --at: var(--limeT); }
+.accent-coral { --a: var(--coral); --at: var(--coralT); }
+.accent-sky { --a: var(--sky); --at: var(--skyT); }
+.accent-pink { --a: var(--pink); --at: var(--pinkT); }
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Manrope', system-ui, sans-serif;
+  transition: background 0.3s, color 0.3s;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+a:hover { opacity: 0.8; }
+
+h1, h2, h3, p { margin: 0; }
+
+.page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 8px 24px 24px;
+}
+
+/* ---------- Shared building blocks ---------- */
+.card {
+  border-radius: 30px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Solid accent-coloured card (use with an .accent-* class). */
+.card-accent {
+  border-radius: 30px;
+  background: var(--a);
+  color: var(--onacc);
+  padding: 26px;
+}
+
+.display { font-family: 'Syne', sans-serif; }
+.mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; }
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.eyebrow.dim { color: var(--dim); }
+
+.card-title { font: 700 26px/1.15 'Syne', sans-serif; }
+
+.body-text {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.chip-outline {
+  font: 500 12px 'JetBrains Mono', monospace;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+
+.chip-filled {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--card2);
+}
+
+.striped {
+  background: repeating-linear-gradient(135deg, var(--stripe) 0 10px, var(--card2) 10px 20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 500 12px 'JetBrains Mono', monospace;
+  color: var(--dim);
+}
+
+/* ---------- Animations ---------- */
+@keyframes sbspin { to { transform: rotate(360deg); } }
+@keyframes sbwave { to { transform: translateX(-160px); } }
+@keyframes sbmarq { to { transform: translateX(-50%); } }
+@keyframes sbpulse {
+  0% { box-shadow: 0 0 0 0 var(--glow), 0 0 0 0 var(--lime); }
+  100% { box-shadow: 0 0 0 14px transparent, 0 0 0 0 var(--lime); }
+}
+
+/* Pieces of split headings (see src/scripts/reveal.ts). The mask clips each
+   piece so it appears to rise out of the baseline. */
+.rv-mask {
+  display: inline-block;
+  overflow: clip;
+  vertical-align: top;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+.rv-piece { display: inline-block; will-change: transform; }
+.rv-word { display: inline-block; white-space: nowrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+@media (max-width: 600px) {
+  .page { padding: 4px 16px 16px; }
+  .card, .card-accent { border-radius: 24px; }
+  .card-title { font-size: 22px; }
+}

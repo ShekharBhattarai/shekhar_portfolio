@@ -1,0 +1,102 @@
+---
+import { experience } from '../data/portfolio';
+import SectionHeading from './SectionHeading.astro';
+---
+
+<section id="experience">
+  <SectionHeading title="Experience" />
+  <div class="list">
+    {
+      experience.map((job) => (
+        <article class:list={['job', `accent-${job.accent}`]}>
+          <div class="side">
+            <span class="mono period">{job.period}</span>
+            {job.ongoing && <span class="badge">ONGOING</span>}
+            <span class="location">{job.location}</span>
+          </div>
+          <div class="main">
+            <div class="titles">
+              <h3 class="card-title">{job.role}</h3>
+              <span class="company">{job.company}</span>
+            </div>
+            {job.summary && <p class="body-text">{job.summary}</p>}
+            {job.bullets && (
+              <ul class="body-text">
+                {job.bullets.map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+            )}
+            {job.tags && (
+              <div class="chips">
+                {job.tags.map((t) => (
+                  <span class="chip-outline">{t}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .list { display: flex; flex-direction: column; gap: 14px; }
+
+  .job {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    border-radius: 30px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .side {
+    background: var(--a);
+    color: var(--onacc);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .period { font-size: 13px; }
+  .badge {
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--onacc);
+    color: var(--a);
+  }
+  .location { margin-top: auto; font-size: 13px; font-weight: 700; }
+
+  .main {
+    padding: 30px 34px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .titles { display: flex; flex-direction: column; gap: 4px; }
+  .company { font-weight: 700; color: var(--at); }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    line-height: 1.6;
+  }
+  li::before { content: '→ '; }
+
+  @media (max-width: 760px) {
+    .job { grid-template-columns: 1fr; }
+    .side { padding: 22px 24px; flex-direction: row; flex-wrap: wrap; align-items: center; }
+    .location { margin: 0 0 0 auto; }
+    .main { padding: 24px; }
+  }
+</style>

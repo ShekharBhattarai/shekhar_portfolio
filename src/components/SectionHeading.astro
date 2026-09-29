@@ -1,0 +1,30 @@
+---
+// Props are how you pass data into a component: <SectionHeading title="..." />
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<div class="heading">
+  <h2 class="display">{title}</h2>
+</div>
+
+<style>
+  .heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 72px 8px 22px;
+  }
+  h2 {
+    font-weight: 800;
+    font-size: clamp(34px, 6vw, 48px);
+    letter-spacing: -0.03em;
+  }
+  @media (max-width: 600px) {
+    .heading { margin-top: 56px; }
+  }
+</style>

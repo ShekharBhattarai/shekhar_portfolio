@@ -1,0 +1,22 @@
+---
+import { profile } from '../data/portfolio';
+
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <span>© {year} {profile.firstName} {profile.lastName} · {profile.location}</span>
+  <span class="mono">signal locked ●</span>
+</footer>
+
+<style>
+  footer {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 26px 8px 4px;
+    font-size: 13px;
+    color: var(--dim);
+  }
+</style>

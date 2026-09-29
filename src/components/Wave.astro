@@ -1,0 +1,43 @@
+---
+// The frontmatter runs at build time, so the sine-wave paths are computed once
+// and shipped as plain SVG — no JavaScript in the browser.
+const W = 1400;
+const amp = 16;
+const period = 160;
+
+function sinePath(amplitude: number, wavelength: number, phase = 0) {
+  let d = 'M0 40';
+  for (let x = 0; x <= W; x += 8) {
+    const y = 40 + amplitude * Math.sin((x / wavelength) * Math.PI * 2 + phase);
+    d += ` L${x} ${y.toFixed(1)}`;
+  }
+  return d;
+}
+
+const main = sinePath(amp, period);
+const harmonic = sinePath(amp * 0.55, period / 2, 1);
+---
+
+<div class="wave" aria-hidden="true">
+  <svg width={W} height="80">
+    <path d={main} fill="none" stroke="var(--coralT)" stroke-width="2.5" />
+    <path d={harmonic} fill="none" stroke="var(--sky)" stroke-width="1.5" opacity="0.7" />
+  </svg>
+</div>
+
+<style>
+  .wave {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    height: 80px;
+    overflow: hidden;
+    pointer-events: none;
+    mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent);
+  }
+  svg {
+    display: block;
+    animation: sbwave 3s linear infinite;
+  }
+</style>

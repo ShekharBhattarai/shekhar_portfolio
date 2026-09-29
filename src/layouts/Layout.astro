@@ -1,0 +1,66 @@
+---
+// Importing the CSS here makes Astro bundle it for every page that uses this layout.
+import '../styles/global.css';
+import { revealSelector } from '../scripts/reveal-config';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Shekhar Bhattarai — RF, Antenna & SATCOM Engineer',
+  description = 'Portfolio of Shekhar Bhattarai, Electronics & Communication engineer specialising in RF, antennas and satellite communication systems.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--
+      is:inline tells Astro to leave this script exactly where it is (not bundled),
+      so it runs before the page paints. It restores the saved theme and avoids a
+      flash of the wrong colours.
+    -->
+    <script is:inline>
+      try {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+      } catch {}
+
+      // Opt in to entrance animations (skipped for people who prefer reduced motion).
+      // If the animation script somehow never runs, reveal everything after 2.5s.
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const root = document.documentElement;
+        root.classList.add('motion');
+        setTimeout(() => {
+          if (!('revealReady' in root.dataset)) root.classList.remove('motion');
+        }, 2500);
+      }
+    </script>
+
+    <!-- Hide animated elements before first paint so they don't flash. Built from reveal-config.ts. -->
+    <style is:global set:html={`html.motion :is(${revealSelector}) { opacity: 0; }`}></style>
+  </head>
+  <body>
+    <slot />
+    <script>
+      // A regular <script> is bundled by Astro and loaded as a module.
+      import '../scripts/reveal';
+    </script>
+  </body>
+</html>

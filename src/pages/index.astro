@@ -1,0 +1,35 @@
+---
+// Every .astro file in src/pages becomes a route. This one is "/".
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.tsx';
+import Hero from '../components/Hero.astro';
+import Marquee from '../components/Marquee.astro';
+import Experience from '../components/Experience.astro';
+import Education from '../components/Education.astro';
+import Projects from '../components/Projects.astro';
+import Skills from '../components/Skills.astro';
+import Beyond from '../components/Beyond.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout>
+  <!--
+    Header is a React component. By default Astro renders React to static HTML only;
+    client:load tells Astro to also ship its JavaScript and hydrate it on page load.
+  -->
+  <Header client:load />
+  <div class="page">
+    <main>
+      <Hero />
+      <Marquee />
+      <Experience />
+      <Education />
+      <Projects />
+      <Skills />
+      <Beyond />
+      <Contact />
+    </main>
+    <Footer />
+  </div>
+</Layout>

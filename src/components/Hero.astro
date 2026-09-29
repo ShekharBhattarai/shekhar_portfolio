@@ -1,0 +1,195 @@
+---
+import { profile, highlights, spectrumBands } from '../data/portfolio';
+import Wave from './Wave.astro';
+import Orbit from './Orbit.astro';
+---
+
+<section id="profile" class="bento">
+  <div class="card intro">
+    <div class="status">
+      <span class="pulse"></span>
+      <span>{profile.status}</span>
+    </div>
+    <h1 class="display">{profile.firstName}<br />{profile.lastName}<span class="dot">.</span></h1>
+    <p class="lead">{profile.intro}</p>
+    <div class="contacts">
+      <a href={`mailto:${profile.email}`}>✉ {profile.email}</a>
+      <a href={profile.phoneHref}>{profile.phone}</a>
+      <span>{profile.location}</span>
+    </div>
+    <Wave />
+  </div>
+
+  <div class="card portrait-card">
+    <Orbit />
+    {
+      profile.portrait ? (
+        <img class="portrait" src={profile.portrait} alt={`${profile.firstName} ${profile.lastName}`} />
+      ) : (
+        <div class="portrait striped">portrait</div>
+      )
+    }
+    <div class="corner top mono">
+      <span style="color:var(--limeT)">● LEO</span>
+      <span style="color:var(--pinkT)">● MEO</span>
+      <span style="color:var(--skyT)">● GEO</span>
+    </div>
+    <div class="corner bottom mono">
+      <span>GS · TLS</span><span>{profile.coords}</span>
+    </div>
+  </div>
+
+  {
+    highlights.map((h) => (
+      <div class:list={['card-accent', 'highlight', `accent-${h.accent}`]}>
+        <span class="eyebrow">{h.label}</span>
+        <span class="highlight-text display">{h.text}</span>
+      </div>
+    ))
+  }
+
+  <div class="card spectrum">
+    <span class="eyebrow dim">Spectrum I've worked across</span>
+    <div class="spectrum-body">
+      <div class="spectrum-bar"></div>
+      <div class="bands mono">{spectrumBands.map((b) => <span>{b}</span>)}</div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: minmax(160px, auto);
+    gap: 14px;
+  }
+
+  .intro {
+    grid-column: span 3;
+    grid-row: span 2;
+    position: relative;
+    overflow: hidden;
+    padding: 44px 44px 96px;
+    gap: 26px;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--coralT);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .pulse {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--coral);
+    /* sbpulse rings out in --glow; tint it coral for this dot. */
+    --glow: color-mix(in srgb, var(--coral) 22%, transparent);
+    animation: sbpulse 1.8s infinite;
+  }
+
+  h1 {
+    font-weight: 800;
+    font-size: clamp(48px, 7vw, 80px);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+  }
+  .dot { color: var(--limeT); }
+
+  .lead {
+    max-width: 620px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+
+  .contacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .contacts > * {
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: var(--card2);
+  }
+
+  .portrait-card {
+    grid-row: span 2;
+    position: relative;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+  }
+  .portrait {
+    position: relative;
+    z-index: 1;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .corner {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--dim);
+  }
+  .corner.top { top: 18px; }
+  .corner.bottom { bottom: 18px; }
+
+  .highlight {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .highlight-text { font: 700 22px/1.15 'Syne', sans-serif; }
+
+  .spectrum {
+    grid-column: span 2;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .spectrum-body { display: flex; flex-direction: column; gap: 8px; }
+  .spectrum-bar {
+    height: 14px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--pink), var(--coral), var(--lime), var(--sky));
+  }
+  .bands {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 1000px) {
+    .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .intro { grid-column: span 2; grid-row: auto; }
+    .portrait-card { grid-column: span 2; grid-row: auto; }
+  }
+
+  @media (max-width: 600px) {
+    .intro { padding: 28px 24px 96px; }
+    h1 { font-size: 10.5vw; }
+    .lead { font-size: 16px; }
+    .highlight, .spectrum { grid-column: span 2; }
+    .bands { font-size: 9px; }
+  }
+</style>

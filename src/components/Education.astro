@@ -1,0 +1,103 @@
+---
+import { education, thesis, courses } from '../data/portfolio';
+import SectionHeading from './SectionHeading.astro';
+import PatchAntenna from './PatchAntenna.astro';
+---
+
+<section id="education">
+  <SectionHeading title="Education" />
+  <div class="grid">
+    {
+      education.map((e) => (
+        <div class:list={['card', 'degree', `accent-${e.accent}`]}>
+          <span class="mono period">{e.period}</span>
+          <h3 class="card-title">{e.degree}</h3>
+          <span class="school">{e.school}</span>
+          <span class="mono grade">{e.grade}</span>
+        </div>
+      ))
+    }
+
+    <div class="card-accent accent-sky thesis">
+      <div class="thesis-text">
+        <span class="eyebrow">{thesis.label}</span>
+        <h3 class="display">{thesis.title}</h3>
+        <p>{thesis.summary}</p>
+      </div>
+      {
+        thesis.image ? (
+          <img class="thesis-media" src={thesis.image} alt="Antenna render" />
+        ) : (
+          <PatchAntenna class="thesis-media antenna-stage" />
+        )
+      }
+    </div>
+
+    <div class="card">
+      <span class="eyebrow dim">Relevant courses</span>
+      <div class="chips">{courses.map((c) => <span class="chip-filled">{c}</span>)}</div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .degree {
+    grid-column: span 2;
+    padding: 30px;
+    gap: 12px;
+  }
+  .period { font-size: 13px; color: var(--at); }
+  .school { font-weight: 700; color: var(--muted); }
+  .grade {
+    margin-top: auto;
+    align-self: flex-start;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--card2);
+  }
+
+  .thesis {
+    grid-column: span 3;
+    padding: 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 28px;
+  }
+  .thesis-text { display: flex; flex-direction: column; gap: 12px; }
+  .thesis h3 {
+    font-weight: 800;
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .thesis p { font-size: 15px; line-height: 1.55; font-weight: 600; }
+  .thesis-media {
+    border-radius: 20px;
+    min-height: 170px;
+    width: 100%;
+    object-fit: cover;
+  }
+  .antenna-stage {
+    height: 100%;
+    min-height: 220px;
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  @media (max-width: 1000px) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .thesis { grid-column: span 2; }
+    .grid > .card:last-child { grid-column: span 2; }
+  }
+  @media (max-width: 760px) {
+    .degree { grid-column: span 2; }
+    .thesis { grid-template-columns: 1fr; padding: 26px; }
+    .thesis h3 { font-size: 26px; }
+  }
+</style>

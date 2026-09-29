@@ -1,0 +1,121 @@
+---
+// Three dashed orbit rings, each carrying a small satellite, plus a rotating
+// radar-style beam. Everything is animated with CSS only.
+const rings = [
+  { size: 250, duration: 16, color: 'var(--lime)', reverse: false, scale: 1, start: 0 },
+  { size: 310, duration: 26, color: 'var(--pink)', reverse: true, scale: 0.85, start: 140 },
+  { size: 370, duration: 40, color: 'var(--sky)', reverse: false, scale: 0.75, start: 250 },
+];
+---
+
+<div class="orbit" aria-hidden="true">
+  <div class="beam"></div>
+  {
+    rings.map((r) => (
+      <div
+        class="ring"
+        style={`--size:${r.size}px; --c:${r.color}; --s:${r.scale}; transform: rotate(${r.start}deg)`}
+      >
+        <div
+          class="spinner"
+          style={`animation-duration:${r.duration}s; animation-direction:${r.reverse ? 'reverse' : 'normal'}`}
+        >
+          <div class="sat">
+            <span class="panel" />
+            <span class="body">
+              <span class="dish" />
+            </span>
+            <span class="panel" />
+            <span class="signal" />
+          </div>
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .orbit {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .beam {
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0 300deg,
+      color-mix(in srgb, var(--lime) 35%, transparent) 360deg
+    );
+    animation: sbspin 6s linear infinite;
+  }
+
+  .ring {
+    position: absolute;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    border: 1px dashed color-mix(in srgb, var(--ink) 20%, transparent);
+  }
+
+  .spinner {
+    position: absolute;
+    inset: 0;
+    animation: sbspin linear infinite;
+  }
+
+  .sat {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(var(--s));
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .panel {
+    width: 16px;
+    height: 8px;
+    border-radius: 1px;
+    background: repeating-linear-gradient(90deg, var(--c) 0 3px, transparent 3px 4px);
+    border: 1px solid var(--c);
+  }
+
+  .body {
+    position: relative;
+    width: 10px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--ink);
+  }
+
+  .dish {
+    position: absolute;
+    left: 50%;
+    bottom: -7px;
+    margin-left: -5px;
+    width: 10px;
+    height: 5px;
+    border-radius: 0 0 10px 10px;
+    background: var(--c);
+  }
+
+  .signal {
+    position: absolute;
+    left: 50%;
+    top: 20px;
+    width: 2px;
+    height: 2px;
+    margin-left: -1px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 4px var(--c);
+  }
+</style>
