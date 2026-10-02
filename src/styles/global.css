@@ -21,6 +21,7 @@
   --onacc: #111114;
   --stripe: #24242b;
   --glow: rgba(189, 226, 58, 0.14);
+  --violet: #6639e1;
 }
 
 [data-theme='light'] {
@@ -43,12 +44,14 @@
   --onacc: #131316;
   --stripe: #e6e2d7;
   --glow: rgba(160, 210, 0, 0.18);
+  --violet: #6639e1;;
 }
 
 /* Accent helpers: set --a (fill colour) and --at (readable text colour). */
 .accent-lime { --a: var(--lime); --at: var(--limeT); }
 .accent-coral { --a: var(--coral); --at: var(--coralT); }
 .accent-sky { --a: var(--sky); --at: var(--skyT); }
+.accent-violet { --a: var(--violet); --at: var(--violet); }
 .accent-pink { --a: var(--pink); --at: var(--pinkT); }
 
 /* ---------- Base ---------- */

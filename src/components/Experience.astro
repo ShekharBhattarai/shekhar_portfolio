@@ -12,6 +12,8 @@ import SectionHeading from './SectionHeading.astro';
           <div class="side">
             <span class="mono period">{job.period}</span>
             {job.ongoing && <span class="badge">ONGOING</span>}
+           
+            {job.image && <img src={job.image} alt={job.company} class="company-logo" />}
             <span class="location">{job.location}</span>
           </div>
           <div class="main">
@@ -81,6 +83,16 @@ import SectionHeading from './SectionHeading.astro';
   }
   .titles { display: flex; flex-direction: column; gap: 4px; }
   .company { font-weight: 700; color: var(--at); }
+
+  .company-logo {
+    width: 100%;
+    max-width: 120px;
+    height: auto;
+    margin-top: 10px;
+    margin-bottom: 1px;
+    margin-left: 10px;
+    position: center;
+  }
 
   ul {
     margin: 0;

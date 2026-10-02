@@ -2,14 +2,14 @@
 // the components in src/components only handle layout and styling.
 
 /** One of the four accent colours defined in src/styles/global.css. */
-export type Accent = 'lime' | 'coral' | 'sky' | 'pink';
+export type Accent = 'lime' | 'coral' | 'sky' | 'violet' | 'pink';
 
 export const profile = {
   firstName: 'Shekhar',
   lastName: 'Bhattarai',
-  status: 'Open to RF · Antenna · SATCOM roles',
+  status: 'Open to RF · Antenna · SATCOM projects & collaborations',
   intro:
-    'Electronics & Communication engineer, finishing an M.Sc. in Satellite Communication Systems at INP Toulouse – ENSEEIHT. From antennas on PocketQube satellites in Nepal to LEO links for connected cars in France.',
+    'Doctorate at XLIM in Reconfigurable Antenna with a Reduced Beamforming Network for 5G+ Applications',
   email: 'Shekharbhattarai7@gmail.com',
   phone: '(+33) 745 405 037',
   phoneHref: 'tel:+33745405037',
@@ -22,16 +22,16 @@ export const profile = {
 };
 
 export const highlights: { label: string; text: string; accent: Accent }[] = [
-  { label: 'Ongoing', text: 'PhD in Antenna Design for 5G+ applications', accent: 'lime' },
+  { label: 'Ongoing', text: 'PhD in RF & Antenna, XLIM', accent: 'lime' },
   { label: 'Masters Degree', text: 'M.Sc. SATCOM, ENSEEIHT', accent: 'coral' },
 ];
 
-export const spectrumBands = ['UHF', '600M', '2.5G', '3.2G', '4G', 'X', 'Ku', 'Ka', '40/60G'];
+export const spectrumBands = ['UHF', '2GHz', '3GHz', '5GHz', 'X', 'Ku', 'Ka', '40/60GHz'];
 
 export const tools = [
-  'Keysight ADS', 'ANSYS HFSS', 'CST', 'Altair FEKO', 'COMSOL', 'GNU Radio',
+  'ANSYS HFSS', 'CST', 'Altair FEKO','Keysight ADS', 'COMSOL', 'GNU Radio',
   'MATLAB / Simulink', 'Python', 'C/C++', 'USRP', 'HackRF', 'FPGA · VHDL',
-  'STM32', 'Linux', 'Git', 'SolidWorks',
+  'STM32', 'Linux', 'Git',
 ];
 
 export const experience: {
@@ -44,36 +44,39 @@ export const experience: {
   summary?: string;
   bullets?: string[];
   tags?: string[];
+  image?: string;
 }[] = [
   {
     period: 'Feb 2025 — Aug 2025',
     location: 'Toulouse, France',
-    ongoing: true,
+    ongoing: false,
     role: 'Satellite Communications System Engineer — Intern',
-    company: 'Continental Automotive France S.A.S',
+    company: 'AUMOVIO (Continental Automotive France S.A.S)',
     accent: 'lime',
     summary:
       'End-of-study internship: review of the latest 3GPP/5GAA standards, link-budget analysis of different LEO constellations for automotive applications (sub-6 GHz and Ka/Ku band), and parametric study, modeling and validation using digital-twin models to recommend key parameters for next-gen NTN vehicle terminals.',
-    tags: ['3GPP / 5GAA', 'LEO', 'Ka/Ku', 'Digital twin'],
+    tags: ['3GPP / 5GAA', 'LEO', 'Ka/Ku','FEKO', 'Digital twin'],
+    image: '/AUMOVIO.webp'
   },
   {
     period: 'Jun 2024 — Sep 2024',
+    image: '/Anywaves.webp',
     location: 'Toulouse, France',
     role: 'R&D Intern — Compact Phased Array Antenna',
     company: 'Anywaves',
-    accent: 'sky',
+    accent: 'violet',
     bullets: [
-      'Design validation, simulation and analysis of a phased array on surface waves and mutual coupling vs scan angle; improved active S-parameters to raise realized gain and avoid scan blindness on an X-band satellite payload antenna.',
-      'Integrated radome structures to enhance beam steering, realized gain, cross-polarization discrimination (XPD) and sidelobe suppression, achieving target performance metrics.',
+      'Design validation, simulation and analysis of a compact phased array on X-band satellite payload antenna.',
     ],
     tags: ['X-band', 'Phased array', 'Radome', 'XPD'],
   },
   {
     period: 'Feb 2022 — Jul 2023',
+    image: '/orionspace.webp',
     location: 'Nepal',
     role: 'Research & Development Engineer',
     company: 'Orion Space Nepal Pvt. Ltd.',
-    accent: 'pink',
+    accent: 'sky',
     bullets: [
       'Antenna design, tuning and installation for pico-satellites and the ground-station receiver.',
       'R&D on embedded and software development for commercial PocketQubes (nano/pico satellites).',
@@ -87,21 +90,18 @@ export const education: {
   period: string;
   degree: string;
   school: string;
-  grade: string;
   accent: Accent;
 }[] = [
   {
-    period: '2023 — 2025 · ongoing',
+    period: '2023 — 2025',
     degree: 'M.Sc. Satellite Communication Systems (SATCOM)',
     school: 'INP Toulouse, ENSEEIHT · Toulouse, France',
-    grade: 'M1 · 13.628 / 20',
     accent: 'lime',
   },
   {
     period: '2017 — 2022',
     degree: 'B.Eng. Electronics & Communication Engineering',
     school: 'Tribhuvan University, IOE Eastern Regional Campus · Dharan, Nepal',
-    grade: 'Final · 65.54 %',
     accent: 'coral',
   },
 ];
@@ -173,7 +173,7 @@ export const skills: { title: string; items: string; accent: Accent }[] = [
   },
   {
     title: 'Wireless & SATCOM',
-    items: 'NTN standards (Rel. 17/18), probability theory, modulation, channel coding, multiple access, diversity, SDR, digital & statistical signal processing, radar',
+    items: 'NTN standards (Rel. 17/18), probability theory,  channel coding, modulation, multiple access, diversity, SDR, digital & statistical signal processing',
     accent: 'sky',
   },
   {
@@ -188,7 +188,7 @@ export const skills: { title: string; items: string; accent: Accent }[] = [
   },
   {
     title: 'Embedded & hardware',
-    items: 'SDRs (USRP, HackRF), FPGA (VHDL), embedded design for RF, RF measurement tools, STM microcontrollers',
+    items: 'SDRs (USRP, HackRF), FPGA (VHDL), embedded design for RF, RF measurement tools, microcontrollers',
     accent: 'lime',
   },
   {
